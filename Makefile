@@ -1,4 +1,4 @@
-NAME     := go-xccache-sweeper
+NAME     := xccache-sweeper
 VERSION  := $(shell git describe --tags --abbrev=0)
 REVISION := $(shell git rev-parse --short HEAD)
 
@@ -21,7 +21,7 @@ update: setup
 	#glide update
 # Build
 build: setup
-	go build $(LDFLAGS)
+	go build $(LDFLAGS) -o $(NAME)
 	
 ## Install application
 install: build
