@@ -1,2 +1,2 @@
-# go-xcode-sweeper
+# go-xcodecache-sweeper
 
