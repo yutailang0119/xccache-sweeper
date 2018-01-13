@@ -3,6 +3,7 @@ package main
 import (
   "os"
   "os/user"
+  "os/exec"
   "log"
   "strings"
   "strconv"
@@ -34,8 +35,20 @@ func check_expired(dir string, expired time.Time) (bool, error) {
 }
 
 func main() {
-  usr, _ := user.Current()
-  xcode_caches_path := strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1)
+
+  xcode_build_location, err := exec.Command("defaults", "read", "com.apple.dt.Xcode", "IDEBuildLocationStyle").Output()
+  if err != nil {
+    panic(err)
+  }
+
+  var xcode_caches_path string
+  if xcode_build_location == "Unique" {
+    usr, _ := user.Current()
+    xcode_caches_path = strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1)
+  } else {
+    usr, _ := user.Current()
+    xcode_caches_path = strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1)
+  }
 
   derived_data_path := filepath.Join(xcode_caches_path, "*DerivedData")
   archives_path := filepath.Join(xcode_caches_path, "Archives")
@@ -44,7 +57,7 @@ func main() {
   now := time.Now()
   expired := now.AddDate(0, -1, 0)
 
-  err := filepath.Walk(xcode_caches_path, func(path string, info os.FileInfo, err error) error {
+  err = filepath.Walk(xcode_caches_path, func(path string, info os.FileInfo, err error) error {
     if info.IsDir()  {
 
       ok, err := filepath.Match(derived_data_path, path)
