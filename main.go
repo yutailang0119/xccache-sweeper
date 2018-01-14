@@ -36,13 +36,13 @@ func check_expired(dir string, expired time.Time) (bool, error) {
 
 func main() {
 
-  xcode_build_location, err := exec.Command("defaults", "read", "com.apple.dt.Xcode", "IDEBuildLocationStyle").Output()
+  xcode_build_location_sytle, err := exec.Command("defaults", "read", "com.apple.dt.Xcode", "IDEBuildLocationStyle").Output()
   if err != nil {
     panic(err)
   }
 
   var xcode_caches_path string
-  if xcode_build_location == "Unique" {
+  if string(xcode_build_location_sytle) == "Unique" {
     usr, _ := user.Current()
     xcode_caches_path = strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1)
   } else {
