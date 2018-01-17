@@ -11,6 +11,50 @@ import (
   "path/filepath"
 )
 
+func cache_paths() ([]string, error) {
+  xcode_build_location_sytle, err := exec.Command("defaults", "read", "com.apple.dt.Xcode", "IDEBuildLocationStyle").Output()
+  if err != nil {
+    return nil, err
+  }
+
+  usr, _ := user.Current()
+  if string(xcode_build_location_sytle) == "Unique" {
+    return []string{strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1)}, nil
+  } else {
+    // TODO: 再帰的に*.xcodeprojを探す
+
+    paths []string := []
+    err = filepath.Walk(usr.HomeDir, func(path string, info os.FileInfo, err error) error {
+      if info.IsDir()  {
+
+        ok, err := filepath.Match("*.xcodeproj", path)
+        if err != nil {
+          return err
+        }
+
+        if ok {
+          err := os.RemoveAll(path)
+          if err != nil {
+            return err
+          }
+          log.Println(path)
+          return filepath.SkipDir
+        }
+      
+      }
+      
+      return nil
+  })
+
+  if err != nil {
+    return err
+  }
+
+    usr, _ := user.Current()
+    return []string{strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1)}, nil
+  }
+}
+
 func check_expired(dir string, expired time.Time) (bool, error) {
 
   splited := strings.Split(dir, "-")
@@ -50,7 +94,7 @@ func main() {
     xcode_caches_path = strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1)
   }
 
-  derived_data_path := filepath.Join(xcode_caches_path, "*DerivedData")
+  derived_data_path := filepath.Join(xcode_caches_path, "DerivedData")
   archives_path := filepath.Join(xcode_caches_path, "Archives")
   matching_archives_path := filepath.Join(archives_path, "*")
 
