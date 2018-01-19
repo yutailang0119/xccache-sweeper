@@ -11,7 +11,7 @@ import (
   "path/filepath"
 )
 
-func cache_path() (string, error) {
+func cache_paths() ([]string, error) {
   xcode_build_location_sytle, err := exec.Command("defaults", "read", "com.apple.dt.Xcode", "IDEBuildLocationStyle").Output()
   if err != nil {
     return nil, err
@@ -19,31 +19,37 @@ func cache_path() (string, error) {
 
   usr, _ := user.Current()
   if string(xcode_build_location_sytle) == "Unique" {
-    return strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1), nil
+    return []string{strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1)}, nil
   } else {
-    // TODO: 再帰的に*.xcodeprojを探す
-    //paths []string := []
-    //err = filepath.Walk(usr.HomeDir, func(path string, info os.FileInfo, err error) error {
-    //  if info.IsDir()  {
-    //
-    //    ok, err := filepath.Match("*.xcodeproj", path)
-    //    if err != nil {
-    //      return err
-    //    }
-    //
-    //    if ok {
-    //      paths = append(paths, path)
-    //      return filepath.SkipDir
-    //    }
-    //
-    //  }
-    //
-    //  return nil
-    //})
-    //
-    //if err != nil {
-    //return err
-  //}
+    paths := []string{}
+    err := filepath.Walk(usr.HomeDir, func(path string, info os.FileInfo, err error) error {
+      if info.IsDir()  {
+
+        if filepath.Ext(path) == ".xcodeproj" {
+          cmd := "xcodebuild -project " + path
+          cmd = cmd + " -showBuildSettings | grep -e \"BUILD_ROOT\""
+          build_root, _:= exec.Command("sh", "-c", cmd).Output()
+          output := strings.TrimSpace(string(build_root))
+
+          build_root_path := strings.TrimPrefix(output, "BUILD_ROOT = ")
+          derived_data_path := strings.TrimSuffix(build_root_path, "/Build/Products")
+
+          paths = append(paths, derived_data_path)
+
+          return filepath.SkipDir
+        }
+
+      }
+
+      return nil
+    })
+
+    if err != nil {
+      return nil, err
+    }
+
+    return paths, nil
+
   }
 }
 
