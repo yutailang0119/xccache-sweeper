@@ -10,6 +10,11 @@ import (
   "path/filepath"
 )
 
+var (
+  Version  string
+  Revision string
+)
+
 func check_expired(dir string, expired time.Time) (bool, error) {
 
   splited := strings.Split(dir, "-")
