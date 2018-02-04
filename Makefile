@@ -17,4 +17,8 @@ deps: setup
 update: setup
 	#glide update
 
-.PHONY: setup deps update
+## Install application
+install:
+	go install $(LDFLAGS)
+
+.PHONY: setup deps update install
