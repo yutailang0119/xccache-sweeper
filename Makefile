@@ -21,4 +21,8 @@ update: setup
 install:
 	go install $(LDFLAGS)
 
-.PHONY: setup deps update install
+## Test
+test:
+	go test -cover -v `glide novendor`
+
+.PHONY: setup deps update install test
