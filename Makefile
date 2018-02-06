@@ -25,4 +25,10 @@ install:
 test:
 	go test -cover -v `glide novendor`
 
-.PHONY: setup deps update install test
+## Clean
+clean:
+	rm -rf bin/*
+	rm -rf vendor/*
+
+.PHONY: setup deps update install test clean
+
