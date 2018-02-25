@@ -1,4 +1,4 @@
-# go-xcodecache-sweeper
+# go-xccache-sweeper
 
 # How to use
 
@@ -22,7 +22,7 @@ $./main
 3. Select `Run Shell Script`
 4. Wirte a Shell command
     ```bash
-    ~/go/src/github.com/yutailang0119/go-xcodecache-sweeper/main // WorkingDirectory/go-xcodecache-sweeper/main
+    ~/go/src/github.com/yutailang0119/go-xccache-sweeper/main // WorkingDirectory/go-xccache-sweeper/main
     ```
     ![ShellCommand.png](./Resources/README/Automator/ShellCommand.png)
 5. Save as Application  
