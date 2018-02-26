@@ -23,6 +23,8 @@ update: setup
 ## Install application
 install:
 	go install $(LDFLAGS)
+	mkdir -p "$(PREFIX)/bin"
+	ln -s "$(GOPATH)/bin/$(NAME)" "$(PREFIX)/bin/$(NAME)"
 
 ## Test
 test:
