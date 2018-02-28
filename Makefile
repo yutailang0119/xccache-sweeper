@@ -1,5 +1,5 @@
 NAME     := go-xccache-sweeper
-VERSION  := $(shell git --tags --abbrev=0)
+VERSION  := $(shell git describe --tags --abbrev=0)
 REVISION := $(shell git rev-parse --short HEAD)
 
 GOPATH   := $(shell go env GOPATH)
