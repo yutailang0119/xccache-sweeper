@@ -19,12 +19,14 @@ deps: setup
 ## Update dependencies
 update: setup
 	#glide update
-
+# Build
+build: setup
+	go build $(LDFLAGS)
+	
 ## Install application
-install:
-	go install $(LDFLAGS)
+install: build
 	mkdir -p "$(PREFIX)/bin"
-	ln -s "$(GOPATH)/bin/$(NAME)" "$(PREFIX)/bin/$(NAME)"
+	cp -f "./$(NAME)" "$(PREFIX)/bin/$(NAME)"
 
 ## Test
 test:
@@ -35,5 +37,5 @@ clean:
 	rm -rf bin/*
 	rm -rf vendor/*
 
-.PHONY: setup deps update install test clean
+.PHONY: setup deps update build install test clean
 
