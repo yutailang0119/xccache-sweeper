@@ -11,6 +11,11 @@ import (
   "path/filepath"
 )
 
+var (
+  Version  string
+  Revision string
+)
+
 func cached_derived_data_paths() ([]string, error) {
   xcode_build_location_style, err := exec.Command("defaults", "read", "com.apple.dt.Xcode", "IDEBuildLocationStyle").Output()
   if err != nil {
