@@ -19,7 +19,7 @@ var (
 func cached_derived_data_paths() ([]string, error) {
   xcode_build_location_style, err := exec.Command("defaults", "read", "com.apple.dt.Xcode", "IDEBuildLocationStyle").Output()
   if err != nil {
-    return nil, err
+    xcode_build_location_style = []byte("Unique")
   }
 
   usr, _ := user.Current()
