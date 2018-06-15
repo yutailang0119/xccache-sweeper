@@ -12,18 +12,20 @@ import (
 )
 
 var (
+  // Version is git tag version from Makefile `shell git describe --tags --abbrev=0`
   Version  string
+  // Revision is git HEAD revision from Makefile `shell git rev-parse --short HEAD`
   Revision string
 )
 
-func cached_derived_data_paths() ([]string, error) {
-  xcode_build_location_style, err := exec.Command("defaults", "read", "com.apple.dt.Xcode", "IDEBuildLocationStyle").Output()
+func cachedDerivedDataPaths() ([]string, error) {
+  xcodeBuildLocationStyle, err := exec.Command("defaults", "read", "com.apple.dt.Xcode", "IDEBuildLocationStyle").Output()
   if err != nil {
-    xcode_build_location_style = []byte("Unique")
+    xcodeBuildLocationStyle = []byte("Unique")
   }
 
   usr, _ := user.Current()
-  if strings.TrimSpace(string(xcode_build_location_style)) == "Unique" {
+  if strings.TrimSpace(string(xcodeBuildLocationStyle)) == "Unique" {
     return []string{strings.Replace("~/Library/Developer/Xcode/DerivedData",  "~", usr.HomeDir, 1)}, nil
   } else {
     paths := []string{}
@@ -33,13 +35,13 @@ func cached_derived_data_paths() ([]string, error) {
         if filepath.Ext(path) == ".xcodeproj" {
           cmd := "xcodebuild -project " + path
           cmd = cmd + " -showBuildSettings | grep -e \"BUILD_ROOT\""
-          build_root, _:= exec.Command("sh", "-c", cmd).Output()
-          output := strings.TrimSpace(string(build_root))
+          buildRoot, _:= exec.Command("sh", "-c", cmd).Output()
+          output := strings.TrimSpace(string(buildRoot))
 
-          build_root_path := strings.TrimPrefix(output, "BUILD_ROOT = ")
-          derived_data_path := strings.TrimSuffix(build_root_path, "/Build/Products")
+          buildRootPath := strings.TrimPrefix(output, "BUILD_ROOT = ")
+          derivedDataPath := strings.TrimSuffix(buildRootPath, "/Build/Products")
 
-          paths = append(paths, derived_data_path)
+          paths = append(paths, derivedDataPath)
 
           return filepath.SkipDir
         }
@@ -58,19 +60,19 @@ func cached_derived_data_paths() ([]string, error) {
   }
 }
 
-func cached_archives_path() string {
+func cachedArchivesPath() string {
 
   usr, _ := user.Current()
-  xcode_plist_path := strings.Replace("~/Library/Preferences/com.apple.dt.Xcode",  "~", usr.HomeDir, 1)
-  archives_path, err := exec.Command("defaults", "read", xcode_plist_path, "IDECustomDistributionArchivesLocation").Output()
+  xcodePlistPath := strings.Replace("~/Library/Preferences/com.apple.dt.Xcode",  "~", usr.HomeDir, 1)
+  archivesPath, err := exec.Command("defaults", "read", xcodePlistPath, "IDECustomDistributionArchivesLocation").Output()
   if err != nil {
     return strings.Replace("~/Library/Developer/Xcode/Archives",  "~", usr.HomeDir, 1)
   }
-  return string(archives_path)
+  return string(archivesPath)
 
 }
 
-func check_expired(dir string, expired time.Time) (bool, error) {
+func checkExpired(dir string, expired time.Time) (bool, error) {
 
   splited := strings.Split(dir, "-")
   year, err := strconv.Atoi(splited[0])
@@ -95,40 +97,40 @@ func check_expired(dir string, expired time.Time) (bool, error) {
 
 func main() {
 
-  derived_data_paths, err := cached_derived_data_paths()
+  derivedDataPaths, err := cachedDerivedDataPaths()
   if err != nil {
     panic(err)
   }
 
-  for _, path := range derived_data_paths {
+  for _, path := range derivedDataPaths {
     err := os.RemoveAll(path)
     if err == nil {
       log.Println(path)
     }
   }
 
-  archives_path := cached_archives_path()
-  matching_archives_path := filepath.Join(archives_path, "*")
+  archivesPath := cachedArchivesPath()
+  matchingArchivesPath := filepath.Join(archivesPath, "*")
 
   now := time.Now()
   expired := now.AddDate(0, -1, 0)
 
-  err = filepath.Walk(archives_path, func(path string, info os.FileInfo, err error) error {
+  err = filepath.Walk(archivesPath, func(path string, info os.FileInfo, err error) error {
     if info.IsDir()  {
 
-      ok, err := filepath.Match(matching_archives_path, path)
+      ok, err := filepath.Match(matchingArchivesPath, path)
       if err != nil {
         return err
       }
 
       if ok {
-        dir := strings.Replace(path, archives_path + "/", "", 1)
-        is_expired, err := check_expired(dir, expired)
+        dir := strings.Replace(path, archivesPath + "/", "", 1)
+        isExpired, err := checkExpired(dir, expired)
         if err != nil {
           return err
         }
 
-        if is_expired {
+        if isExpired {
           err := os.RemoveAll(path)
           if err != nil {
             return err
