@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// SweepCaches sweep Archives and DerivedData
 func SweepCaches() error {
 
 	derivedDataPaths, err := cachedDerivedDataPaths()

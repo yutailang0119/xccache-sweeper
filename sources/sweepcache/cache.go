@@ -19,37 +19,37 @@ func cachedDerivedDataPaths() ([]string, error) {
 	usr, _ := user.Current()
 	if strings.TrimSpace(string(xcodeBuildLocationStyle)) == "Unique" {
 		return []string{strings.Replace("~/Library/Developer/Xcode/DerivedData", "~", usr.HomeDir, 1)}, nil
-	} else {
-		paths := []string{}
-		err := filepath.Walk(usr.HomeDir, func(path string, info os.FileInfo, err error) error {
-			if info.IsDir() {
+	}
 
-				if filepath.Ext(path) == ".xcodeproj" {
-					cmd := "xcodebuild -project " + path
-					cmd = cmd + " -showBuildSettings | grep -e \"BUILD_ROOT\""
-					buildRoot, _ := exec.Command("sh", "-c", cmd).Output()
-					output := strings.TrimSpace(string(buildRoot))
+	paths := []string{}
+	err = filepath.Walk(usr.HomeDir, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
 
-					buildRootPath := strings.TrimPrefix(output, "BUILD_ROOT = ")
-					derivedDataPath := strings.TrimSuffix(buildRootPath, "/Build/Products")
+			if filepath.Ext(path) == ".xcodeproj" {
+				cmd := "xcodebuild -project " + path
+				cmd = cmd + " -showBuildSettings | grep -e \"BUILD_ROOT\""
+				buildRoot, _ := exec.Command("sh", "-c", cmd).Output()
+				output := strings.TrimSpace(string(buildRoot))
 
-					paths = append(paths, derivedDataPath)
+				buildRootPath := strings.TrimPrefix(output, "BUILD_ROOT = ")
+				derivedDataPath := strings.TrimSuffix(buildRootPath, "/Build/Products")
 
-					return filepath.SkipDir
-				}
+				paths = append(paths, derivedDataPath)
 
+				return filepath.SkipDir
 			}
 
-			return nil
-		})
-
-		if err != nil {
-			return nil, err
 		}
 
-		return paths, nil
+		return nil
+	})
 
+	if err != nil {
+		return nil, err
 	}
+
+	return paths, nil
+
 }
 
 func cachedArchivesPath() string {
