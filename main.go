@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/yutailang0119/go-xccache-sweeper/sources/sweepcache"
+	"github.com/yutailang0119/go-xccache-sweeper/sources/deriveddata"
 )
 
 var (
@@ -12,7 +12,7 @@ var (
 )
 
 func main() {
-	err := sweepcache.SweepCaches()
+	err := deriveddata.SweepDerivedData()
 
 	if err != nil {
 		panic(err)

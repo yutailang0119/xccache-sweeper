@@ -1,4 +1,4 @@
-package sweepcache
+package archives
 
 import (
 	"log"
@@ -8,28 +8,16 @@ import (
 	"time"
 )
 
-// SweepCaches sweep Archives and DerivedData
-func SweepCaches() error {
+// SweepArchives sweep Archives
+func SweepArchives() error {
 
-	derivedDataPaths, err := cachedDerivedDataPaths()
-	if err != nil {
-		return err
-	}
-
-	for _, path := range derivedDataPaths {
-		err := os.RemoveAll(path)
-		if err == nil {
-			log.Println(path)
-		}
-	}
-
-	archivesPath := cachedArchivesPath()
+	archivesPath := archivesPath()
 	matchingArchivesPath := filepath.Join(archivesPath, "*")
 
 	now := time.Now()
 	expired := now.AddDate(0, -1, 0)
 
-	err = filepath.Walk(archivesPath, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(archivesPath, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 
 			ok, err := filepath.Match(matchingArchivesPath, path)
