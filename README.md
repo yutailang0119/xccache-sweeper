@@ -1,33 +1,45 @@
 # go-xccache-sweeper
 
-# How to use
+## A Work In Progress
 
-## Builde main file
+go-xccache-sweeper is still in active development.
 
-```bash
-$go build main.go
+## Instllation
+
+### go get
+
+```shell
+$ go get github.com/yutailang0119/go-xccache-sweeper
 ```
 
-## Execute app
+### From Source
 
-```bash
-$./main
+```shell
+$ git clone https://github.com/yutailang0119/go-xccache-sweeper
+$ cd go-xccache-sweeper
+$ make install
 ```
 
-## Use with Automator (Recommend)
+## Usege
 
-1. Launch to Automator
-2. Choose a type of Application  
-    ![AutomatorApplication.png](./Resources/README/Automator/AutomatorApplication.png)
-3. Select `Run Shell Script`
-4. Wirte a Shell command
-    ```bash
-    ~/go/src/github.com/yutailang0119/go-xccache-sweeper/main // WorkingDirectory/go-xccache-sweeper/main
-    ```
-    ![ShellCommand.png](./Resources/README/Automator/ShellCommand.png)
-5. Save as Application  
-    ![SaveAsApplication.png](./Resources/README/Automator/SaveAsApplication.png)
-6. `System Preference > Users & Groups > Login Items`  
-    ![SelectApplication.png](./Resources/README/Automator/SelectApplication.png)
-7. Select this app
+```shell
+NAME:
+   xccache-sweeper - Sweep Xcode caches
+
+USAGE:
+   xccache-sweeper [global options] command [command options] [arguments...]
+
+VERSION:
+   0.1.0
+
+COMMANDS:
+     archives     Sweep Archives. Defaults is /Users/user/Library/Developer/Xcode/Archives
+     deriveddata  Sweep DerivedData. Defaults is /Users/user/Library/Developer/Xcode/DerivedData
+     caches       Sweep Archives and DerivedData.
+     help, h      Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h     show help
+   --version, -v  print the version
+```
 
