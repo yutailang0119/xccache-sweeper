@@ -37,6 +37,19 @@ func main() {
 				return deriveddata.SweepDerivedData()
 			},
 		},
+		{
+			Name:  "caches",
+			Usage: "Sweep Archives and DerivedData.",
+			Action: func(c *cli.Context) error {
+				err := deriveddata.SweepDerivedData()
+				if err != nil {
+					return err
+				}
+
+				err = archives.SweepArchives()
+				return err
+			},
+		},
 	}
 
 	err := app.Run(os.Args)
