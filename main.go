@@ -6,6 +6,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/yutailang0119/go-xccache-sweeper/sources/archives"
 	"github.com/yutailang0119/go-xccache-sweeper/sources/deriveddata"
+	"github.com/yutailang0119/go-xccache-sweeper/sources/devicesupport"
 )
 
 var (
@@ -47,6 +48,20 @@ func main() {
 				}
 
 				err = archives.SweepArchives()
+				return err
+			},
+		},
+		{
+			Name:  "devicesupport",
+			Usage: "Sweep Device Support. ~/Library/Developer/Xcode/*DeviceSupport",
+			Flags: []cli.Flag{
+				cli.BoolFlag{
+					Name:  "all, a",
+					Usage: "force delete all",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				err := devicesupport.SweepDeviceSupports(c.Args().First(), c.Bool("all"))
 				return err
 			},
 		},
