@@ -1,17 +1,17 @@
 package devicesupport
 
 import (
-	"strconv"
-	"fmt"
 	"bufio"
+	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
 type deviceSupportsList struct {
-	iOS deviceSupports
+	iOS     deviceSupports
 	watchOS deviceSupports
-	tvOS deviceSupports
+	tvOS    deviceSupports
 }
 
 func (v deviceSupportsList) osList(platform string) ([]deviceSupports, error) {
@@ -60,14 +60,14 @@ func (v deviceSupportsList) allDeviceSupports(platform string) ([]deviceSupport,
 		return nil, err
 	}
 	var all []deviceSupport
-	for _, supports := range  osList {
+	for _, supports := range osList {
 		versions, err := supports.versions()
 		if err != nil {
 			return nil, err
 		}
 		all = append(all, versions...)
 	}
-	return  all, nil
+	return all, nil
 }
 
 func (v deviceSupportsList) deleteAll(platform string) error {
@@ -150,7 +150,7 @@ func (v deviceSupportsList) askDelete(platform string) error {
 	target := allDeviceSupports[index]
 	err = os.RemoveAll(target.path)
 	if err != nil {
-		return  err
+		return err
 	}
 
 	fmt.Println("Deleted: ", target.description())
