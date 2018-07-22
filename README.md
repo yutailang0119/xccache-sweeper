@@ -33,10 +33,11 @@ VERSION:
    0.1.0
 
 COMMANDS:
-     archives     Sweep Archives. Defaults is /Users/user/Library/Developer/Xcode/Archives
-     deriveddata  Sweep DerivedData. Defaults is /Users/user/Library/Developer/Xcode/DerivedData
-     caches       Sweep Archives and DerivedData.
-     help, h      Shows a list of commands or help for one command
+     archives       Sweep Archives. Defaults is /Users/user/Library/Developer/Xcode/Archives
+     deriveddata    Sweep DerivedData. Defaults is /Users/user/Library/Developer/Xcode/DerivedData
+     caches         Sweep Archives and DerivedData.
+     devicesupport  Sweep Device Support. ~/Library/Developer/Xcode/*DeviceSupport
+     help, h        Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
    --help, -h     show help
