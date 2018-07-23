@@ -1,22 +1,22 @@
-# go-xccache-sweeper
+# xccache-sweeper
 
 ## A Work In Progress
 
-go-xccache-sweeper is still in active development.
+xccache-sweeper is still in active development.
 
 ## Instllation
 
 ### go get
 
 ```shell
-$ go get github.com/yutailang0119/go-xccache-sweeper
+$ go get github.com/yutailang0119/xccache-sweeper
 ```
 
 ### From Source
 
 ```shell
-$ git clone https://github.com/yutailang0119/go-xccache-sweeper
-$ cd go-xccache-sweeper
+$ git clone https://github.com/yutailang0119/xccache-sweeper
+$ cd xccache-sweeper
 $ make install
 ```
 

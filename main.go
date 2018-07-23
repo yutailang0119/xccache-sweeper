@@ -4,9 +4,9 @@ import (
 	"os"
 
 	"github.com/urfave/cli"
-	"github.com/yutailang0119/go-xccache-sweeper/lib/archives"
-	"github.com/yutailang0119/go-xccache-sweeper/lib/deriveddata"
-	"github.com/yutailang0119/go-xccache-sweeper/lib/devicesupport"
+	"github.com/yutailang0119/xccache-sweeper/lib/archives"
+	"github.com/yutailang0119/xccache-sweeper/lib/deriveddata"
+	"github.com/yutailang0119/xccache-sweeper/lib/devicesupport"
 )
 
 var (
