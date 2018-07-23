@@ -1,30 +1,46 @@
-# go-xcodecache-sweeper
+# xccache-sweeper
 
-# How to use
+## A Work In Progress
 
-## Builde main file
+xccache-sweeper is still in active development.
 
-```bash
-$go build main.go
+## Instllation
+
+### go get
+
+```shell
+$ go get github.com/yutailang0119/xccache-sweeper
 ```
 
-## Execute app
+### From Source
 
-```bash
-$./main
+```shell
+$ git clone https://github.com/yutailang0119/xccache-sweeper
+$ cd xccache-sweeper
+$ make install
 ```
 
-## Use with Automator (Recommend)
+## Usege
 
-1. Launch to Automator
-2. Choose a type of Application
-3. Select `Run Shell Script`
-4. Run Shell Script 
-5. Wirte a Shell command
-    ```bash
-    ~/go/src/github.com/yutailang0119/go-xcodecache-sweeper/main // Working Directory
-    ```
-6. Save as Application
-7. `System Preference > Users & Groups > Login Items`
-8. Select this app
+```shell
+NAME:
+   xccache-sweeper - Sweep Xcode caches
+
+USAGE:
+   xccache-sweeper [global options] command [command options] [arguments...]
+
+VERSION:
+   0.1.0
+
+COMMANDS:
+     archives       Sweep Archives. Defaults is /Users/user/Library/Developer/Xcode/Archives
+     deriveddata    Sweep DerivedData. Defaults is /Users/user/Library/Developer/Xcode/DerivedData
+     caches         Sweep Archives and DerivedData.
+     devicesupport  Sweep Device Support. ~/Library/Developer/Xcode/*DeviceSupport
+     help, h        Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h     show help
+   --version, -v  print the version
+```
 

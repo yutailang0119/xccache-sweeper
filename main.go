@@ -1,95 +1,75 @@
 package main
 
 import (
-  "os"
-  "os/user"
-  "log"
-  "strings"
-  "strconv"
-  "time"
-  "path/filepath"
+	"os"
+
+	"github.com/urfave/cli"
+	"github.com/yutailang0119/xccache-sweeper/lib/archives"
+	"github.com/yutailang0119/xccache-sweeper/lib/deriveddata"
+	"github.com/yutailang0119/xccache-sweeper/lib/devicesupport"
 )
 
-func check_expired(dir string, expired time.Time) (bool, error) {
-
-  splited := strings.Split(dir, "-")
-  year, err := strconv.Atoi(splited[0])
-  if err != nil {
-    return false, err
-  }
-
-  month, err := strconv.Atoi(splited[1])
-  if err != nil {
-    return false, err
-  }
-
-  day, err := strconv.Atoi(splited[2])
-  if err != nil {
-    return false, err
-  }
-
-  date := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
-
-  return date.Before(expired), nil
-}
+var (
+	// Version is git tag version from Makefile `shell git describe --tags --abbrev=0`
+	Version string
+	// Revision is git HEAD revision from Makefile `shell git rev-parse --short HEAD`
+	Revision string
+)
 
 func main() {
-  usr, _ := user.Current()
-  xcode_caches_path := strings.Replace("~/Library/Developer/Xcode",  "~", usr.HomeDir, 1)
 
-  derived_data_path := filepath.Join(xcode_caches_path, "*DerivedData")
-  archives_path := filepath.Join(xcode_caches_path, "Archives")
-  matching_archives_path := filepath.Join(archives_path, "*")
+	app := cli.NewApp()
+	app.Name = "xccache-sweeper"
+	app.Usage = "Sweep Xcode caches"
+	app.Version = Version
 
-  now := time.Now()
-  expired := now.AddDate(0, -1, 0)
+	app.Commands = []cli.Command{
+		{
+			Name:  "archives",
+			Usage: "Sweep Archives. Defaults is /Users/user/Library/Developer/Xcode/Archives",
+			Action: func(c *cli.Context) error {
+				return archives.SweepArchives()
+			},
+		},
+		{
+			Name:  "deriveddata",
+			Usage: "Sweep DerivedData. Defaults is /Users/user/Library/Developer/Xcode/DerivedData",
+			Action: func(c *cli.Context) error {
+				return deriveddata.SweepDerivedData()
+			},
+		},
+		{
+			Name:  "caches",
+			Usage: "Sweep Archives and DerivedData.",
+			Action: func(c *cli.Context) error {
+				err := deriveddata.SweepDerivedData()
+				if err != nil {
+					return err
+				}
 
-  err := filepath.Walk(xcode_caches_path, func(path string, info os.FileInfo, err error) error {
-    if info.IsDir()  {
+				err = archives.SweepArchives()
+				return err
+			},
+		},
+		{
+			Name:  "devicesupport",
+			Usage: "Sweep Device Support. ~/Library/Developer/Xcode/*DeviceSupport",
+			Flags: []cli.Flag{
+				cli.BoolFlag{
+					Name:  "all, a",
+					Usage: "force delete all",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				err := devicesupport.SweepDeviceSupports(c.Args().First(), c.Bool("all"))
+				return err
+			},
+		},
+	}
 
-      ok, err := filepath.Match(derived_data_path, path)
-      if err != nil {
-        return err
-      }
+	err := app.Run(os.Args)
 
-      if ok {
-        err := os.RemoveAll(path)
-        if err != nil {
-          return err
-        }
-        log.Println(path)
-        return filepath.SkipDir
-      }
-
-      ok, err = filepath.Match(matching_archives_path, path)
-      if err != nil {
-        return err
-      }
-
-      if ok {
-        dir := strings.Replace(path, archives_path + "/", "", 1)
-        is_expired, err := check_expired(dir, expired)
-        if err != nil {
-          return err
-        }
-
-        if is_expired {
-          err := os.RemoveAll(path)
-          if err != nil {
-            return err
-          }
-          log.Println(path)
-          return filepath.SkipDir
-        }
-      }
-    }
-
-      return nil
-  })
-
-  if err != nil {
-    panic(err)
-  }
-
+	if err != nil {
+		panic(err)
+	}
 }
-

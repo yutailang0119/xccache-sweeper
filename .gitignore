@@ -1,7 +1,8 @@
-### https://raw.github.com/github/gitignore/5f15ed83c7a3d5db29845edae5205ca2d795c3d8/Go.gitignore
+### https://raw.github.com/github/gitignore/320a610b9ffba3ff28166370b6dd9f73096e34b7/Go.gitignore
 
 # Binaries for programs and plugins
 *.exe
+*.exe~
 *.dll
 *.so
 *.dylib
@@ -12,7 +13,10 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
+xccache-sweeper
+.idea/
 
