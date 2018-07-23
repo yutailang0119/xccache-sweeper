@@ -1,7 +1,7 @@
 package devicesupport
 
 type deviceSupport struct {
-	osName string
+	osName  string
 	version string
 	path    string
 }

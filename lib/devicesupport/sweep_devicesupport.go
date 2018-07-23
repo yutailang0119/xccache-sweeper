@@ -1,8 +1,8 @@
 package devicesupport
 
 import (
-	"strings"
 	"os/user"
+	"strings"
 )
 
 func xcodeFilesPath() string {

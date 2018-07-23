@@ -4,9 +4,9 @@ import (
 	"os"
 
 	"github.com/urfave/cli"
-	"github.com/yutailang0119/go-xccache-sweeper/sources/archives"
-	"github.com/yutailang0119/go-xccache-sweeper/sources/deriveddata"
-	"github.com/yutailang0119/go-xccache-sweeper/sources/devicesupport"
+	"github.com/yutailang0119/xccache-sweeper/lib/archives"
+	"github.com/yutailang0119/xccache-sweeper/lib/deriveddata"
+	"github.com/yutailang0119/xccache-sweeper/lib/devicesupport"
 )
 
 var (
@@ -21,7 +21,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "xccache-sweeper"
 	app.Usage = "Sweep Xcode caches"
-	app.Version = "0.1.0"
+	app.Version = Version
 
 	app.Commands = []cli.Command{
 		{
