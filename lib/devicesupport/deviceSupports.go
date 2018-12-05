@@ -2,6 +2,7 @@ package devicesupport
 
 import (
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -18,12 +19,21 @@ func (v deviceSupports) path() string {
 }
 
 func (v deviceSupports) versions() ([]deviceSupport, error) {
-	files, err := ioutil.ReadDir(v.path())
+	path := v.path()
+
+	var list []deviceSupport
+
+	exist, err := exists(path)
+
+	if !exist {
+		return list, nil
+	}
+
+	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		return nil, err
 	}
 
-	var list []deviceSupport
 	for _, file := range files {
 		if strings.HasPrefix(file.Name(), ".") {
 			continue
@@ -33,4 +43,15 @@ func (v deviceSupports) versions() ([]deviceSupport, error) {
 	}
 
 	return list, nil
+}
+
+func exists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return true, err
 }
