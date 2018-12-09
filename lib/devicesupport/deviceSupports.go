@@ -23,9 +23,9 @@ func (v deviceSupports) versions() ([]deviceSupport, error) {
 
 	var list []deviceSupport
 
-	exist, err := exists(path)
+	isExist, _ := exists(path)
 
-	if !exist {
+	if !isExist {
 		return list, nil
 	}
 
@@ -50,8 +50,10 @@ func exists(path string) (bool, error) {
 	if err == nil {
 		return true, nil
 	}
+
 	if os.IsNotExist(err) {
 		return false, nil
 	}
+
 	return true, err
 }
