@@ -20,7 +20,7 @@ $ cd xccache-sweeper
 $ make install
 ```
 
-## Usege
+## Usage
 
 ```shell
 NAME:
